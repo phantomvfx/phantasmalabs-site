@@ -249,14 +249,18 @@
 <div style="max-width: 700px; margin: 40px auto; text-align: center; background-color: rgba(0, 0, 0, 0.25); padding: 1px; border-radius: 10px; color: white;">
   <h4 style="margin-bottom: 10px;">Biopunk</h4>
 
+<!-- Video: bIOpUNK -->
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+  <iframe
+    src="https://www.youtube.com/embed/T0A9CwbuAYM?loop=1&playlist=T0A9CwbuAYM&controls=0&modestbranding=1&rel=0&iv_load_policy=3"
+    title="biopunk"
+    frameborder="0"
+    allow="encrypted-media; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+  </iframe>
 </div>
 
-<div class="video-gallery-grid" align="center">
-    <div onclick="openLightbox('biopunkVideos', 0)">
-        <img src="clips/thumb_biopunk.png" alt="BioPunk Video Thumbnail 1">
-    </div>
-
-</div>
 
 
 <div style="position: relative; max-width: 1200px; margin: 40px auto; overflow: hidden;">
@@ -326,9 +330,36 @@
 </script>
 
 
-<div style="max-width: 700px; margin: 40px auto; text-align: center; background-color: rgba(0, 0, 0, 0.25); padding: 1px; border-radius: 10px;">
-  <h4 style="margin-bottom: 1px; color: white;">Moto-Sai</h4><br>
 
+<div style="max-width: 700px; margin: 40px auto; text-align: center; background-color: rgba(0, 0, 0, 0.25); padding: 1px; border-radius: 10px; color: white;">
+  <h4 style="margin-bottom: 10px;">Concept Portraits: Moto Sai</h4>
+
+
+
+<!-- Video 1 -->
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+  <iframe
+    src="https://www.youtube.com/embed/8r4OVPyPrnQ?loop=1&playlist=8r4OVPyPrnQ&controls=0&modestbranding=1&rel=0&iv_load_policy=3"
+    title="moto sai"
+    frameborder="0"
+    allow="encrypted-media; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+  </iframe>
+</div>
+
+<br>
+
+<!-- Video 2 -->
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+  <iframe
+    src="https://www.youtube.com/embed/tJzWCvwQFQI?loop=1&playlist=tJzWCvwQFQI&controls=0&modestbranding=1&rel=0&iv_load_policy=3"
+    title="moto sai"
+    frameborder="0"
+    allow="encrypted-media; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+  </iframe>
 </div>
 
 
@@ -494,6 +525,44 @@
 </script>
 
 
+
+<div style="max-width: 700px; margin: 40px auto; text-align: center; background-color: rgba(0, 0, 0, 0.25); padding: 1px; border-radius: 10px; color: white;">
+  <h4 style="margin-bottom: 10px;">Product Shots</h4>
+<br>
+
+<!-- Video 3 -->
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+  <iframe
+    src="https://www.youtube.com/embed/U5fNb_AWjwo?loop=1&playlist=U5fNb_AWjwo&controls=0&modestbranding=1&rel=0&iv_load_policy=3"
+    title="Product Shots"
+    frameborder="0"
+    allow="encrypted-media; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+  </iframe>
+</div>
+
+<br>
+
+<!-- Video 4 -->
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+  <iframe
+    src="https://www.youtube.com/embed/6XbtR0w5r_M?loop=1&playlist=6XbtR0w5r_M&controls=0&modestbranding=1&rel=0&iv_load_policy=3"
+    title="Product Shots"
+    frameborder="0"
+    allow="encrypted-media; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+  </iframe>
+</div>
+
+
+
+
+
+
+
+
 <a id="scrollToTop" href="#" title="Scroll to Top">
     <i class="fas fa-chevron-up"></i>
 </a>
@@ -520,81 +589,6 @@
 </script>
 
 
-<script>
-    // YouTube video IDs (replace with your actual video IDs)
-    const videoData = {
-        biopunkVideos: [
-            "T0A9CwbuAYM", // Replace with actual YouTube video ID
-        ],
-        motoSaiVideos: [
-            "8r4OVPyPrnQ", // Replace with actual YouTube video ID
-            "tJzWCvwQFQI"  // Replace with actual YouTube video ID
-        ],
-        femmeFataleVideos: [
-            "HmtGXJVFNbI", // Replace with actual YouTube video ID
-            "xlqJmZHzmhY"  // Replace with actual YouTube video ID
-        ],
-        productVideos: [
-            "6XbtR0w5r_M", // Replace with actual YouTube video ID
-            "U5fNb_AWjwo"  // Replace with actual YouTube video ID
-        ]
-    };
-
-    function toggleMenu() {
-        const topnav = document.querySelector('.topnav');
-        if (topnav) {
-            topnav.classList.toggle('responsive');
-        }
-    }
-
-    function openLightbox(videoCategory, index) {
-        const videoId = videoData[videoCategory][index];
-        const iframe = document.getElementById('lightbox-iframe');
-        // Correct YouTube embed URL:
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&loop=1&playlist=${videoId}`;
-        document.getElementById('unified-lightbox').style.display = 'flex';
-    }
-
-    function closeLightbox() {
-        const iframe = document.getElementById('lightbox-iframe');
-        iframe.src = ''; // Stop video playback by clearing the src
-        document.getElementById('unified-lightbox').style.display = 'none';
-    }
-
-    // Video background playback rate
-    document.addEventListener('DOMContentLoaded', () => {
-        const video = document.querySelector('.background-video');
-        if (video) {
-            video.playbackRate = 0.33; // 12fps assuming video is 24fps
-            video.play().catch(error => {
-                console.error('Video background playback failed:', error);
-                // Fallback for background video if it fails to play automatically
-                document.body.style.backgroundImage = "url('../images/bg_01_inv.jpg')";
-                document.body.style.backgroundSize = "cover";
-                document.body.style.backgroundAttachment = "fixed";
-            });
-        }
-    });
-
-    // Scroll to Top Button functionality
-    window.onscroll = function() {
-        showScrollToTopButton();
-    };
-
-    function showScrollToTopButton() {
-        const scrollToTopButton = document.getElementById("scrollToTop");
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            scrollToTopButton.classList.add('show');
-        } else {
-            scrollToTopButton.classList.remove('show');
-        }
-    }
-
-    document.getElementById('scrollToTop').addEventListener('click', function(event) {
-        event.preventDefault();
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    });
-</script>
 
 </body>
 </html>
