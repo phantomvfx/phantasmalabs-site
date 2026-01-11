@@ -150,6 +150,8 @@
       background: rgba(0, 0, 0, 0.95);
       flex-direction: row;
       overflow: hidden;
+      padding-top: 12px;
+      box-sizing: border-box;
     }
 
     .lightbox-left {
@@ -178,7 +180,7 @@
 
     /* Minimalistic Scrollbar */
     .lightbox-right::-webkit-scrollbar {
-      width: 12px;
+      width: 10px;
     }
 
     .lightbox-right::-webkit-scrollbar-track {
@@ -248,25 +250,7 @@
       color: white;
     }
 
-    /* Full Screen Toggle */
-    .fullscreen-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      /* Semi-transparent background for visibility */
-      border: 1px solid white;
-      color: white;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      z-index: 2002;
-      /* Ensure above everything */
-    }
 
-    .fullscreen-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
 
     /* Close Button */
     .close-btn {
@@ -302,12 +286,6 @@
       .nav-btn {
         padding: 10px;
         font-size: 18px;
-      }
-
-      /* Adjust fullscreen button for mobile if needed */
-      .fullscreen-btn {
-        bottom: 10px;
-        right: 10px;
       }
     }
   </style>
@@ -423,9 +401,7 @@
     </div>
     <div class="menu">
       <a href="index.html"><i class="fas fa-home"></i> </a>
-      <a href="https://www.instagram.com/phantasma.labs/" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i>
-      </a>
+
       <a href="mailto:mail@phantasmalabs.com"><i class="fas fa-envelope"></i> </a>
     </div>
   </nav>
@@ -461,13 +437,11 @@
     <div class="lightbox-right" id="lightbox-info">
       <div class="project-title" id="lb-title">Title</div>
       <div class="project-tools" id="lb-tools">Tools Used</div>
+      <div class="project-tools" id="lb-aimodels">AI Models</div>
       <div class="project-desc" id="lb-desc">Description goes here.</div>
     </div>
 
-    <!-- Fullscreen Button Moved Here -->
-    <button class="fullscreen-btn" onclick="toggleFullScreen()">
-      <i class="fas fa-expand"></i>
-    </button>
+
   </div>
 
   <script>
@@ -481,7 +455,8 @@
       'rar': {
         title: 'Project RAR',
         tools: 'ComfyUI, Adobe Photoshop',
-        description: `Project RAR is an AI-driven visual lookbook created for a non-profit dog and cat shelter to support fundraising through T-shirt design sales. The project combines generative AI workflows and traditional image editing to produce emotionally engaging, print-ready apparel visuals.\n\nImages were generated in ComfyUI using Stable Diffusion with the Zimage model, enabling precise control over composition, style, and visual consistency. The generated outputs were then refined, composited, and color-corrected in Adobe Photoshop, with careful attention to fabric behavior, lighting, and print realism. Final images were enhanced using SeedVR2, an AI upscaling model, to achieve high-resolution, production-ready results suitable for both digital presentation and physical printing.\n\nThe resulting lookbook presents the T-shirt designs in realistic contexts, helping the shelter communicate its mission, strengthen its visual identity, and increase support through merchandise-based fundraising.`,
+        aimodels: 'Zimage, SeedVR2',
+        description: `Project RAR is an AI-driven visual lookbook created for a non-profit dog and cat shelter to support fundraising through T-shirt design sales. Images were generated in ComfyUI using Zimage model and SeedVR2.\n\nProcess: \nThe project was generated in ComfyUI using the Zimage AI model for initial image generation.The resulting images were then upscaled and enhanced using SeedVR2 within ComfyUI to achieve high- resolution, print- ready visuals suitable for apparel production.`,
         basePath: 'images/rar/Rar_',
         count: 9,
         ext: '.webp',
@@ -489,8 +464,9 @@
       },
       'motosai': {
         title: 'Motosai',
-        tools: 'ComfyUI, Adobe Photoshop, FluxGym | Model: Flux Dev 1',
-        description: `Motosai is a concept portrait series inspired by motorcycle taxi drivers in Thailand, exploring the relationship between human labor and machine dependency. The riders are depicted with mechanically enhanced arms, symbolizing how their bodies and motorcycles function as a single system in order to survive and work within the city.\n\nRather than futuristic augmentation, the mechanical limbs are designed as practical extensions shaped by necessity—tools that reflect repetition, endurance, and economic reality.\n\nProcess:\nThe project was generated using Flux Dev 1 in ComfyUI, with custom workflows built in FluxGym. Two separate LoRA trainings were created: one for the urban Thai environment, and another for the character and wardrobe, ensuring visual consistency across the series. Final refinements, material integration, and lighting adjustments were completed in Adobe Photoshop.`,
+        tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+        aimodels: 'Flux Dev 1',
+        description: `Motosai is a concept portrait series inspired by motorcycle taxi drivers in Bangkok, exploring the relationship between human labor and machine dependency.\n\nProcess:\nThe project was generated using Flux Dev 1 in ComfyUI, with custom Fine tune LORA training. Two separate LoRA trainings were created: one for the urban  environment, and another for the character and wardrobe.`,
         basePath: 'images/motosai/motosai_',
         count: 9,
         ext: '.webp',
@@ -498,8 +474,9 @@
       },
       'ren4t4': {
         title: 'AI Avatar Model',
-        tools: 'ComfyUI, Adobe Photoshop, FluxGym | Model: Flux Dev 1',
-        description: `This project explores the creation of a high-fidelity AI avatar model, designed to function as a flexible digital fashion subject. The focus is on realism, identity consistency, and controlled posing, positioning the avatar as a reusable virtual model for editorial, lookbooks, and brand visuals.\n\nRather than generating a single image, the avatar is treated as a character system—capable of maintaining facial identity, proportions, and style across different poses and scenarios.\n\nProcess:\nThe model was generated using Flux Dev 1 within ComfyUI, supported by a single LoRA trained exclusively on the character, ensuring consistent facial features and overall appearance. DWpose and ZDepth ControlNet were used to precisely control body pose and spatial depth, allowing for accurate posture, framing, and camera perspective. Final refinements, including fabric cleanup, lighting balance, and detail polish, were completed in Adobe Photoshop.`,
+        tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+        aimodels: 'Flux Dev 1',
+        description: `This project explores the creation of a high-fidelity AI avatar model, designed to function as a flexible digital fashion subject for editorial, lookbooks, and brand visuals.\n\nProcess:\nThe model was generated using Flux Dev 1 within ComfyUI, supported by a single LoRA trained on the character. DWpose and ZDepth ControlNet were used to control body pose, allowing for posture, framing, and camera perspective.`,
         basePath: 'images/r3n4t4/ren4t4_',
         count: 9,
         ext: '.webp',
@@ -509,7 +486,7 @@
 
     let currentProject = null;
     let currentImageIndex = 0;
-    let isFullScreen = false;
+
 
     function openLightbox(projectId) {
       currentProject = projects[projectId];
@@ -525,7 +502,6 @@
     function closeLightbox() {
       document.getElementById('lightbox').style.display = 'none';
       document.body.style.overflow = 'auto';
-      resetFullScreen();
     }
 
     function formatDate(n) {
@@ -538,6 +514,7 @@
 
       document.getElementById('lb-title').innerText = currentProject.title;
       document.getElementById('lb-tools').innerText = 'Tools: ' + currentProject.tools;
+      document.getElementById('lb-aimodels').innerText = 'AI Models: ' + (currentProject.aimodels || 'N/A');
       document.getElementById('lb-desc').innerText = currentProject.description || '';
     }
 
@@ -553,38 +530,7 @@
       updateLightboxContent();
     }
 
-    function toggleFullScreen() {
-      const infoPanel = document.getElementById('lightbox-info');
-      const leftPanel = document.querySelector('.lightbox-left');
-      const fsBtn = document.querySelector('.fullscreen-btn i');
 
-      if (!isFullScreen) {
-        // Go Full Screen
-        infoPanel.style.display = 'none';
-        leftPanel.style.width = '100%';
-        fsBtn.className = 'fas fa-compress';
-        isFullScreen = true;
-      } else {
-        // Exit Full Screen
-        resetFullScreen();
-      }
-    }
-
-    function resetFullScreen() {
-      const infoPanel = document.getElementById('lightbox-info');
-      const leftPanel = document.querySelector('.lightbox-left');
-      const fsBtn = document.querySelector('.fullscreen-btn i');
-
-      infoPanel.style.display = 'flex';
-      leftPanel.style.width = '70%'; // Reset to CSS default
-      fsBtn.className = 'fas fa-expand';
-      isFullScreen = false;
-
-      // Handle mobile reset
-      if (window.innerWidth <= 900) {
-        leftPanel.style.width = '100%';
-      }
-    }
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {

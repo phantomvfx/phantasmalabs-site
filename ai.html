@@ -2,530 +2,482 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Phantasma Labs - Image Synthesis">
-    <meta name="keywords" content="Stable Diffusion Synthography">
-    <meta name="author" content="Manuel Llamas">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synthography | Phantasma Labs</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Phantasma Labs - Image Synthesis">
+  <meta name="keywords" content="Stable Diffusion Synthography">
+  <meta name="author" content="Manuel Llamas">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthography | Phantasma Labs</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Muli&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Muli&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
 
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: white;
-            overflow-x: hidden;
-            /* Prevent horizontal scroll */
-        }
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: white;
+      overflow-x: hidden;
+      /* Prevent horizontal scroll */
+    }
 
-        /* Background Styles */
-        #pixi-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
+    /* Background Styles */
+    #pixi-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+    }
 
-        video.background-video {
-            display: none;
-        }
+    video.background-video {
+      display: none;
+    }
 
-        a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+    a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
 
-        /* Grid Layout */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
-            /* Small gap like Instagram */
-            padding: 4px;
-            margin-top: 20px;
-            /* Reduced top margin since no nav */
-        }
 
-        .grid-item {
-            position: relative;
-            width: 100%;
-            padding-top: 100%;
-            /* Square aspect ratio */
-            overflow: hidden;
-            cursor: pointer;
-        }
 
-        .grid-item img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
+    /* Grid Layout */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      /* Small gap like Instagram */
+      padding: 4px;
+      margin-top: 10px;
+      /* Reduced space since topnav is gone */
+    }
 
-        .grid-item:hover img {
-            transform: scale(1.05);
-        }
+    .grid-item {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      /* Square aspect ratio */
+      overflow: hidden;
+      cursor: pointer;
+    }
 
-        /* Mobile Grid */
-        @media screen and (max-width: 768px) {
-            .project-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-                padding: 10px;
-            }
-        }
+    .grid-item img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
 
-        /* Lightbox */
-        #lightbox {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            flex-direction: row;
-            overflow: hidden;
-        }
+    .grid-item:hover img {
+      transform: scale(1.05);
+    }
 
-        .lightbox-left {
-            width: 70%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background: black;
-        }
+    /* Mobile Grid */
+    @media screen and (max-width: 768px) {
+      .project-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+      }
+    }
 
-        .lightbox-right {
-            width: 30%;
-            height: 100%;
-            padding: 40px;
-            background: #111;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            box-sizing: border-box;
-            position: relative;
-            overflow-y: auto;
-            /* Enable vertical scrolling */
-        }
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      flex-direction: row;
+      overflow: hidden;
+      padding-top: 12px;
+      box-sizing: border-box;
+    }
 
-        /* Minimalistic Scrollbar */
-        .lightbox-right::-webkit-scrollbar {
-            width: 12px;
-        }
+    .lightbox-left {
+      width: 70%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: black;
+    }
 
-        .lightbox-right::-webkit-scrollbar-track {
-            background: transparent;
-        }
+    .lightbox-right {
+      width: 30%;
+      height: 100%;
+      padding: 40px;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      position: relative;
+      overflow-y: auto;
+      /* Enable vertical scrolling */
+    }
 
-        .lightbox-right::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 3px;
-        }
+    /* Minimalistic Scrollbar */
+    .lightbox-right::-webkit-scrollbar {
+      width: 10px;
+    }
 
-        .lightbox-right::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(255, 255, 255, 0.8);
-        }
+    .lightbox-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-        #lightbox-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
+    .lightbox-right::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+    }
 
-        /* Lightbox Controls */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background 0.3s;
-            z-index: 10;
-        }
+    .lightbox-right::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
 
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
+    #lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
 
-        .prev-btn {
-            left: 20px;
-        }
+    /* Lightbox Controls */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 10;
+    }
 
-        .next-btn {
-            right: 20px;
-        }
+    .nav-btn:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
 
-        /* Lightbox Info */
-        .project-title {
-            font-family: 'Muli', sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: white;
-        }
+    .prev-btn {
+      left: 20px;
+    }
 
-        .project-tools {
-            font-size: 14px;
-            color: white;
-            margin-bottom: 20px;
-        }
+    .next-btn {
+      right: 20px;
+    }
 
-        .project-desc {
-            font-size: 16px;
-            line-height: 1.6;
-            color: white;
-        }
+    /* Lightbox Info */
+    .project-title {
+      font-family: 'Muli', sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: white;
+    }
 
-        /* Full Screen Toggle */
-        .fullscreen-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            /* Semi-transparent background for visibility */
-            border: 1px solid white;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            z-index: 2002;
-            /* Ensure above everything */
-        }
+    .project-tools {
+      font-size: 14px;
+      color: white;
+      margin-bottom: 20px;
+    }
 
-        .fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    .project-desc {
+      font-size: 16px;
+      line-height: 1.6;
+      color: white;
+    }
 
-        /* Close Button */
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 2001;
-        }
 
-        /* Responsive Lightbox */
-        @media screen and (max-width: 900px) {
-            #lightbox {
-                flex-direction: column;
-            }
 
-            .lightbox-left {
-                width: 100%;
-                height: 60%;
-            }
+    /* Close Button */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      z-index: 2001;
+    }
 
-            .lightbox-right {
-                width: 100%;
-                height: 40%;
-                padding: 20px;
-                overflow-y: auto;
-            }
+    /* Responsive Lightbox */
+    @media screen and (max-width: 900px) {
+      #lightbox {
+        flex-direction: column;
+      }
 
-            .nav-btn {
-                padding: 10px;
-                font-size: 18px;
-            }
+      .lightbox-left {
+        width: 100%;
+        height: 60%;
+      }
 
-            /* Adjust fullscreen button for mobile if needed */
-            .fullscreen-btn {
-                bottom: 10px;
-                right: 10px;
-            }
-        }
-    </style>
+      .lightbox-right {
+        width: 100%;
+        height: 40%;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .nav-btn {
+        padding: 10px;
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- Background -->
-    <canvas id="pixi-canvas"></canvas>
+  <!-- Background -->
+  <canvas id="pixi-canvas"></canvas>
 
-    <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
-        <source src="clips/004.mp4?v=202506142043" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+  <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
+    <source src="clips/004.mp4?v=202506142043" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
-    <!-- Background Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const videoElement = document.getElementById('backgroundVideo');
-            videoElement.playbackRate = 0.5;
+  <!-- Background Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoElement = document.getElementById('backgroundVideo');
+      videoElement.playbackRate = 0.5;
 
-            let app;
-            let background;
-            let displacementSprite;
+      let app;
+      let background;
+      let displacementSprite;
 
-            function resizeBackground() {
-                if (!background || !app || !videoElement) return;
+      function resizeBackground() {
+        if (!background || !app || !videoElement) return;
 
-                const screenWidth = app.screen.width;
-                const screenHeight = app.screen.height;
-                const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
-                const screenAspectRatio = screenWidth / screenHeight;
+        const screenWidth = app.screen.width;
+        const screenHeight = app.screen.height;
+        const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+        const screenAspectRatio = screenWidth / screenHeight;
 
-                let scale, newWidth, newHeight, offsetX = 0, offsetY = 0;
+        let scale, newWidth, newHeight, offsetX = 0, offsetY = 0;
 
-                if (videoAspectRatio > screenAspectRatio) {
-                    scale = screenHeight / videoElement.videoHeight;
-                    newWidth = videoElement.videoWidth * scale;
-                    newHeight = screenHeight;
-                    offsetX = (screenWidth - newWidth) / 2;
-                } else {
-                    scale = screenWidth / videoElement.videoWidth;
-                    newWidth = screenWidth;
-                    newHeight = videoElement.videoHeight * scale;
-                    offsetY = (screenHeight - newHeight) / 2;
-                }
+        if (videoAspectRatio > screenAspectRatio) {
+          scale = screenHeight / videoElement.videoHeight;
+          newWidth = videoElement.videoWidth * scale;
+          newHeight = screenHeight;
+          offsetX = (screenWidth - newWidth) / 2;
+        } else {
+          scale = screenWidth / videoElement.videoWidth;
+          newWidth = screenWidth;
+          newHeight = videoElement.videoHeight * scale;
+          offsetY = (screenHeight - newHeight) / 2;
+        }
 
-                background.width = newWidth;
-                background.height = newHeight;
-                background.x = offsetX;
-                background.y = offsetY;
+        background.width = newWidth;
+        background.height = newHeight;
+        background.x = offsetX;
+        background.y = offsetY;
 
-                if (displacementSprite) {
-                    displacementSprite.x = app.screen.width / 2;
-                    displacementSprite.y = app.screen.height / 2;
-                }
-            }
+        if (displacementSprite) {
+          displacementSprite.x = app.screen.width / 2;
+          displacementSprite.y = app.screen.height / 2;
+        }
+      }
 
-            videoElement.addEventListener('loadeddata', () => {
-                app = new PIXI.Application({
-                    view: document.getElementById('pixi-canvas'),
-                    resizeTo: window,
-                    transparent: false,
-                    backgroundColor: 0x000000
-                });
-
-                const bgTexture = PIXI.Texture.from(videoElement);
-                background = new PIXI.Sprite(bgTexture);
-                background.anchor.set(0);
-                app.stage.addChild(background);
-
-                const distortionTexture = PIXI.Texture.from('images/distortion.png');
-                displacementSprite = new PIXI.Sprite(distortionTexture);
-                displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
-                displacementSprite.anchor.set(0.5);
-                displacementSprite.scale.set(10);
-
-                displacementSprite.x = app.screen.width / 2;
-                displacementSprite.y = app.screen.height / 2;
-
-                app.stage.addChild(displacementSprite);
-
-                const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
-                app.stage.filters = [displacementFilter];
-
-                window.addEventListener('resize', () => {
-                    resizeBackground();
-                });
-
-                app.ticker.add(() => {
-                    displacementSprite.rotation += 0.002;
-                });
-
-                resizeBackground();
-
-                videoElement.play().catch(error => {
-                    console.error('Video playback failed:', error);
-                });
-            });
-
-            // Fallback
-            videoElement.play().catch(error => {
-                console.error('Attempted video play outside loadeddata listener:', error);
-            });
+      videoElement.addEventListener('loadeddata', () => {
+        app = new PIXI.Application({
+          view: document.getElementById('pixi-canvas'),
+          resizeTo: window,
+          transparent: false,
+          backgroundColor: 0x000000
         });
-    </script>
-<br><br>
-    <!-- Project Grid -->
-    <div class="project-grid">
-        <!-- Project 1: Rar -->
-        <div class="grid-item" onclick="openLightbox('rar')">
-            <img src="images/rar/Rar_001.webp" alt="Rar Project">
-        </div>
 
-        <!-- Project 2: Motosai -->
-        <div class="grid-item" onclick="openLightbox('motosai')">
-            <img src="images/motosai/motosai_007.webp" alt="Motosai Project">
-        </div>
+        const bgTexture = PIXI.Texture.from(videoElement);
+        background = new PIXI.Sprite(bgTexture);
+        background.anchor.set(0);
+        app.stage.addChild(background);
 
-        <!-- Project 3: Ren4t4 -->
-        <div class="grid-item" onclick="openLightbox('ren4t4')">
-            <img src="images/r3n4t4/ren4t4_003.webp" alt="R3n4t4 Project">
-        </div>
+        const distortionTexture = PIXI.Texture.from('images/distortion.png');
+        displacementSprite = new PIXI.Sprite(distortionTexture);
+        displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+        displacementSprite.anchor.set(0.5);
+        displacementSprite.scale.set(10);
+
+        displacementSprite.x = app.screen.width / 2;
+        displacementSprite.y = app.screen.height / 2;
+
+        app.stage.addChild(displacementSprite);
+
+        const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+        app.stage.filters = [displacementFilter];
+
+        window.addEventListener('resize', () => {
+          resizeBackground();
+        });
+
+        app.ticker.add(() => {
+          displacementSprite.rotation += 0.002;
+        });
+
+        resizeBackground();
+
+        videoElement.play().catch(error => {
+          console.error('Video playback failed:', error);
+        });
+      });
+
+      // Fallback
+      videoElement.play().catch(error => {
+        console.error('Attempted video play outside loadeddata listener:', error);
+      });
+    });
+  </script>
+
+  <!-- Project Grid -->
+  <div class="project-grid">
+    <!-- Project 1: Rar -->
+    <div class="grid-item" onclick="openLightbox('rar')">
+      <img src="images/rar/Rar_001.webp" alt="Rar Project">
     </div>
 
-    <!-- Lightbox Modal -->
-    <div id="lightbox">
-        <button class="close-btn" onclick="closeLightbox()">&times;</button>
-
-        <div class="lightbox-left">
-            <button class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
-            <img id="lightbox-img" src="" alt="Project Image">
-            <button class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</button>
-        </div>
-
-        <div class="lightbox-right" id="lightbox-info">
-            <div class="project-title" id="lb-title">Title</div>
-            <div class="project-tools" id="lb-tools">Tools Used</div>
-            <div class="project-desc" id="lb-desc">Description goes here.</div>
-        </div>
-
-        <!-- Fullscreen Button Moved Here -->
-        <button class="fullscreen-btn" onclick="toggleFullScreen()">
-            <i class="fas fa-expand"></i>
-        </button>
+    <!-- Project 2: Motosai -->
+    <div class="grid-item" onclick="openLightbox('motosai')">
+      <img src="images/motosai/motosai_007.webp" alt="Motosai Project">
     </div>
 
-    <script>
-        // Project Data
-        const projects = {
-            'rar': {
-                title: 'Project RAR',
-                tools: 'ComfyUI, Adobe Photoshop',
-                description: `Project RAR is an AI-driven visual lookbook created for a non-profit dog and cat shelter to support fundraising through T-shirt design sales. The project combines generative AI workflows and traditional image editing to produce emotionally engaging, print-ready apparel visuals.\n\nImages were generated in ComfyUI using Stable Diffusion with the Zimage model, enabling precise control over composition, style, and visual consistency. The generated outputs were then refined, composited, and color-corrected in Adobe Photoshop, with careful attention to fabric behavior, lighting, and print realism. Final images were enhanced using SeedVR2, an AI upscaling model, to achieve high-resolution, production-ready results suitable for both digital presentation and physical printing.\n\nThe resulting lookbook presents the T-shirt designs in realistic contexts, helping the shelter communicate its mission, strengthen its visual identity, and increase support through merchandise-based fundraising.`,
-                basePath: 'images/rar/Rar_',
-                count: 9,
-                ext: '.webp',
-                startIndex: 1
-            },
-            'motosai': {
-                title: 'Motosai',
-                tools: 'ComfyUI, Adobe Photoshop, FluxGym | Model: Flux Dev 1',
-                description: `Motosai is a concept portrait series inspired by motorcycle taxi drivers in Thailand, exploring the relationship between human labor and machine dependency. The riders are depicted with mechanically enhanced arms, symbolizing how their bodies and motorcycles function as a single system in order to survive and work within the city.\n\nRather than futuristic augmentation, the mechanical limbs are designed as practical extensions shaped by necessity—tools that reflect repetition, endurance, and economic reality.\n\nProcess:\nThe project was generated using Flux Dev 1 in ComfyUI, with custom workflows built in FluxGym. Two separate LoRA trainings were created: one for the urban Thai environment, and another for the character and wardrobe, ensuring visual consistency across the series. Final refinements, material integration, and lighting adjustments were completed in Adobe Photoshop.`,
-                basePath: 'images/motosai/motosai_',
-                count: 9,
-                ext: '.webp',
-                startIndex: 1
-            },
-            'ren4t4': {
-                title: 'AI Avatar Model',
-                tools: 'ComfyUI, Adobe Photoshop, FluxGym | Model: Flux Dev 1',
-                description: `This project explores the creation of a high-fidelity AI avatar model, designed to function as a flexible digital fashion subject. The focus is on realism, identity consistency, and controlled posing, positioning the avatar as a reusable virtual model for editorial, lookbooks, and brand visuals.\n\nRather than generating a single image, the avatar is treated as a character system—capable of maintaining facial identity, proportions, and style across different poses and scenarios.\n\nProcess:\nThe model was generated using Flux Dev 1 within ComfyUI, supported by a single LoRA trained exclusively on the character, ensuring consistent facial features and overall appearance. DWpose and ZDepth ControlNet were used to precisely control body pose and spatial depth, allowing for accurate posture, framing, and camera perspective. Final refinements, including fabric cleanup, lighting balance, and detail polish, were completed in Adobe Photoshop.`,
-                basePath: 'images/r3n4t4/ren4t4_',
-                count: 9,
-                ext: '.webp',
-                startIndex: 1
-            }
-        };
+    <!-- Project 3: Ren4t4 -->
+    <div class="grid-item" onclick="openLightbox('ren4t4')">
+      <img src="images/r3n4t4/ren4t4_003.webp" alt="R3n4t4 Project">
+    </div>
+  </div>
 
-        let currentProject = null;
-        let currentImageIndex = 0;
-        let isFullScreen = false;
+  <!-- Lightbox Modal -->
+  <div id="lightbox">
+    <button class="close-btn" onclick="closeLightbox()">&times;</button>
 
-        function openLightbox(projectId) {
-            currentProject = projects[projectId];
-            if (!currentProject) return;
+    <div class="lightbox-left">
+      <button class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
+      <img id="lightbox-img" src="" alt="Project Image">
+      <button class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</button>
+    </div>
 
-            currentImageIndex = currentProject.startIndex;
-            updateLightboxContent();
+    <div class="lightbox-right" id="lightbox-info">
+      <div class="project-title" id="lb-title">Title</div>
+      <div class="project-tools" id="lb-tools">Tools Used</div>
+      <div class="project-tools" id="lb-aimodels">AI Models</div>
+      <div class="project-desc" id="lb-desc">Description goes here.</div>
+    </div>
 
-            document.getElementById('lightbox').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        }
 
-        function closeLightbox() {
-            document.getElementById('lightbox').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            resetFullScreen();
-        }
+  </div>
 
-        function formatDate(n) {
-            return n.toString().padStart(3, '0');
-        }
+  <script>
 
-        function updateLightboxContent() {
-            const imgPath = `${currentProject.basePath}${formatDate(currentImageIndex)}${currentProject.ext}`;
-            document.getElementById('lightbox-img').src = imgPath;
 
-            document.getElementById('lb-title').innerText = currentProject.title;
-            document.getElementById('lb-tools').innerText = 'Tools: ' + currentProject.tools;
-            document.getElementById('lb-desc').innerText = currentProject.description || '';
-        }
+    // Project Data
+    const projects = {
+      'rar': {
+        title: 'Project RAR',
+        tools: 'ComfyUI, Adobe Photoshop',
+        aimodels: 'Zimage, SeedVR2',
+        description: `Project RAR is an AI-driven visual lookbook created for a non-profit dog and cat shelter to support fundraising through T-shirt design sales. Images were generated in ComfyUI using Zimage model and SeedVR2.\n\nProcess: \nThe project was generated in ComfyUI using the Zimage AI model for initial image generation.The resulting images were then upscaled and enhanced using SeedVR2 within ComfyUI to achieve high- resolution, print- ready visuals suitable for apparel production.`,
+        basePath: 'images/rar/Rar_',
+        count: 9,
+        ext: '.webp',
+        startIndex: 1
+      },
+      'motosai': {
+        title: 'Motosai',
+        tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+        aimodels: 'Flux Dev 1',
+        description: `Motosai is a concept portrait series inspired by motorcycle taxi drivers in Bangkok, exploring the relationship between human labor and machine dependency.\n\nProcess:\nThe project was generated using Flux Dev 1 in ComfyUI, with custom Fine tune LORA training. Two separate LoRA trainings were created: one for the urban  environment, and another for the character and wardrobe.`,
+        basePath: 'images/motosai/motosai_',
+        count: 9,
+        ext: '.webp',
+        startIndex: 1
+      },
+      'ren4t4': {
+        title: 'AI Avatar Model',
+        tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+        aimodels: 'Flux Dev 1',
+        description: `This project explores the creation of a high-fidelity AI avatar model, designed to function as a flexible digital fashion subject for editorial, lookbooks, and brand visuals.\n\nProcess:\nThe model was generated using Flux Dev 1 within ComfyUI, supported by a single LoRA trained on the character. DWpose and ZDepth ControlNet were used to control body pose, allowing for posture, framing, and camera perspective.`,
+        basePath: 'images/r3n4t4/ren4t4_',
+        count: 9,
+        ext: '.webp',
+        startIndex: 1
+      }
+    };
 
-        function changeImage(dir) {
-            if (!currentProject) return;
+    let currentProject = null;
+    let currentImageIndex = 0;
 
-            currentImageIndex += dir;
 
-            // Loop
-            if (currentImageIndex > currentProject.count) currentImageIndex = 1;
-            if (currentImageIndex < 1) currentImageIndex = currentProject.count;
+    function openLightbox(projectId) {
+      currentProject = projects[projectId];
+      if (!currentProject) return;
 
-            updateLightboxContent();
-        }
+      currentImageIndex = currentProject.startIndex;
+      updateLightboxContent();
 
-        function toggleFullScreen() {
-            const infoPanel = document.getElementById('lightbox-info');
-            const leftPanel = document.querySelector('.lightbox-left');
-            const fsBtn = document.querySelector('.fullscreen-btn i');
+      document.getElementById('lightbox').style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
 
-            if (!isFullScreen) {
-                // Go Full Screen
-                infoPanel.style.display = 'none';
-                leftPanel.style.width = '100%';
-                fsBtn.className = 'fas fa-compress';
-                isFullScreen = true;
-            } else {
-                // Exit Full Screen
-                resetFullScreen();
-            }
-        }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
 
-        function resetFullScreen() {
-            const infoPanel = document.getElementById('lightbox-info');
-            const leftPanel = document.querySelector('.lightbox-left');
-            const fsBtn = document.querySelector('.fullscreen-btn i');
+    function formatDate(n) {
+      return n.toString().padStart(3, '0');
+    }
 
-            infoPanel.style.display = 'flex';
-            leftPanel.style.width = '70%'; // Reset to CSS default
-            fsBtn.className = 'fas fa-expand';
-            isFullScreen = false;
+    function updateLightboxContent() {
+      const imgPath = `${currentProject.basePath}${formatDate(currentImageIndex)}${currentProject.ext}`;
+      document.getElementById('lightbox-img').src = imgPath;
 
-            // Handle mobile reset
-            if (window.innerWidth <= 900) {
-                leftPanel.style.width = '100%';
-            }
-        }
+      document.getElementById('lb-title').innerText = currentProject.title;
+      document.getElementById('lb-tools').innerText = 'Tools: ' + currentProject.tools;
+      document.getElementById('lb-aimodels').innerText = 'AI Models: ' + (currentProject.aimodels || 'N/A');
+      document.getElementById('lb-desc').innerText = currentProject.description || '';
+    }
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById('lightbox').style.display === 'flex') {
-                if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowLeft') changeImage(-1);
-                if (e.key === 'ArrowRight') changeImage(1);
-            }
-        });
-    </script>
+    function changeImage(dir) {
+      if (!currentProject) return;
+
+      currentImageIndex += dir;
+
+      // Loop
+      if (currentImageIndex > currentProject.count) currentImageIndex = 1;
+      if (currentImageIndex < 1) currentImageIndex = currentProject.count;
+
+      updateLightboxContent();
+    }
+
+
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('lightbox').style.display === 'flex') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') changeImage(-1);
+        if (e.key === 'ArrowRight') changeImage(1);
+      }
+    });
+  </script>
 
 </body>
 
