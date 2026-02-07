@@ -3,12 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Phantasma Labs">
+  <meta name="description" content="Phantasma Labs - Image Synthesis">
+  <meta name="keywords" content="Stable Diffusion Synthography">
+  <meta name="author" content="Manuel Llamas">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantasma Labs</title>
+  <title>Synthography | Phantasma Labs</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Muli&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Muli&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
 
   <style>
@@ -18,19 +22,11 @@
       padding: 0;
       background-color: #000;
       color: white;
-      overflow: hidden;
+      overflow-x: hidden;
+      /* Prevent horizontal scroll */
     }
 
-    a {
-      color: white;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: orange;
-    }
-
+    /* Background Styles */
     #pixi-canvas {
       position: fixed;
       top: 0;
@@ -40,85 +36,304 @@
       z-index: -1;
     }
 
-    /* Hide the original video element */
-    #backgroundVideo {
+    video.background-video {
       display: none;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+
+
+    /* Grid Layout */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      /* Small gap like Instagram */
+      padding: 4px;
+      margin-top: 10px;
+      /* Reduced space since topnav is gone */
+    }
+
+    .grid-item {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      /* Square aspect ratio */
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .grid-item img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .grid-item:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Mobile Grid */
+    @media screen and (max-width: 768px) {
+      .project-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+      }
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      flex-direction: row;
+      overflow: hidden;
+      padding-top: 0px;
+      box-sizing: border-box;
+    }
+
+    .lightbox-left {
+      width: 70%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: black;
+    }
+
+    .lightbox-right {
+      width: 30%;
+      height: 100%;
+      padding: 40px;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      position: relative;
+      overflow-y: auto;
+      /* Enable vertical scrolling */
+    }
+
+    /* Minimalistic Scrollbar */
+    .lightbox-right::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .lightbox-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .lightbox-right::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+    }
+
+    .lightbox-right::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    #lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Lightbox Controls */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 10;
+    }
+
+    .nav-btn:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .prev-btn {
+      left: 20px;
+    }
+
+    .next-btn {
+      right: 20px;
+    }
+
+    /* Lightbox Info */
+    .project-title {
+      font-family: 'Muli', sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .project-tools {
+      font-size: 14px;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .project-desc {
+      font-size: 16px;
+      line-height: 1.6;
+      color: white;
+    }
+
+
+
+    /* Close Button */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      z-index: 2001;
+    }
+
+    /* Responsive Lightbox */
+    @media screen and (max-width: 900px) {
+      #lightbox {
+        flex-direction: column;
+      }
+
+      .lightbox-left {
+        width: 100%;
+        height: 60%;
+      }
+
+      .lightbox-right {
+        width: 100%;
+        height: 40%;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .nav-btn {
+        padding: 10px;
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- PIXI Canvas -->
-  <canvas id="pixi-canvas"></canvas>
-
-  <!-- Video Element -->
-  <video id="backgroundVideo" autoplay muted loop playsinline>
-    <source src="clips/004_web.mp4?v=202506142043" type="video/mp4">
-  </video>
-
-  <!-- Navigation -->
+ <!-- Navigation -->
   <div style="max-width: 320px; margin: 10px 0; text-align: left; padding: 1px; border-radius: 10px; position: relative; z-index: 2;">
     <h4 style="margin-bottom: 20px; color: white;">Phantasma Labs</h4>
     <a href="synthography.html">Synthography</a>
   </div>
 
   <div style="position: fixed; bottom: 20px; left: 20px; text-align: left; z-index: 2;">
-    <a href="mailto:mail@phantasmalabs.com" style="color: white; font-size: 24px;">
+    <a href="mailto:manuel.llamas@phantasmalabs.com" style="color: white; font-size: 24px;">
       <i class="fas fa-envelope"></i>
     </a>
   </div>
+   <!-- Background -->
+  <canvas id="pixi-canvas"></canvas>
 
-  <!-- Main Script -->
+  <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
+    <source src="clips/004_web.mp4?v=202506142043" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+<!-- Background -->
+  <canvas id="pixi-canvas"></canvas>
+
+  <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
+    <source src="clips/004.mp4?v=202506142043" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Background Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // CONFIGURATION
-      const fallbackImageURL = 'clips/001.png'; // Your fallback image
-      const distortionImageURL = 'images/distortion.png'; // Your distortion map
-      
       const videoElement = document.getElementById('backgroundVideo');
-      const canvasElement = document.getElementById('pixi-canvas');
+      videoElement.playbackRate = 0.5;
 
       let app;
-      let backgroundSprite;
+      let background;
       let displacementSprite;
-      let isInitialized = false;
 
-      // 1. Initialize Pixi with a specific source (Video Element OR Image URL)
-      function initPixi(sourceType, source) {
-        if (isInitialized) return;
-        isInitialized = true;
+      function resizeBackground() {
+        if (!background || !app || !videoElement) return;
 
-        console.log(`Initializing Pixi with: ${sourceType}`);
+        const screenWidth = app.screen.width;
+        const screenHeight = app.screen.height;
+        const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+        const screenAspectRatio = screenWidth / screenHeight;
 
-        // Create Application
+        let scale, newWidth, newHeight, offsetX = 0, offsetY = 0;
+
+        if (videoAspectRatio > screenAspectRatio) {
+          scale = screenHeight / videoElement.videoHeight;
+          newWidth = videoElement.videoWidth * scale;
+          newHeight = screenHeight;
+          offsetX = (screenWidth - newWidth) / 2;
+        } else {
+          scale = screenWidth / videoElement.videoWidth;
+          newWidth = screenWidth;
+          newHeight = videoElement.videoHeight * scale;
+          offsetY = (screenHeight - newHeight) / 2;
+        }
+
+        background.width = newWidth;
+        background.height = newHeight;
+        background.x = offsetX;
+        background.y = offsetY;
+
+        if (displacementSprite) {
+          displacementSprite.x = app.screen.width / 2;
+          displacementSprite.y = app.screen.height / 2;
+        }
+      }
+
+      videoElement.addEventListener('loadeddata', () => {
         app = new PIXI.Application({
-          view: canvasElement,
+          view: document.getElementById('pixi-canvas'),
           resizeTo: window,
-          backgroundAlpha: 0,
+          transparent: false,
           backgroundColor: 0x000000
         });
 
-        // Create Background Texture
-        let bgTexture;
-        if (sourceType === 'video') {
-           bgTexture = PIXI.Texture.from(source);
-        } else {
-           bgTexture = PIXI.Texture.from(source);
-        }
+        const bgTexture = PIXI.Texture.from(videoElement);
+        background = new PIXI.Sprite(bgTexture);
+        background.anchor.set(0);
+        app.stage.addChild(background);
 
-        backgroundSprite = new PIXI.Sprite(bgTexture);
-        backgroundSprite.anchor.set(0);
-        app.stage.addChild(backgroundSprite);
-
-        // Load Distortion Filter
-        const distortionTexture = PIXI.Texture.from(distortionImageURL);
+        const distortionTexture = PIXI.Texture.from('images/distortion.png');
         displacementSprite = new PIXI.Sprite(distortionTexture);
         displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
         displacementSprite.anchor.set(0.5);
         displacementSprite.scale.set(10);
-        
-        // Center the filter
+
         displacementSprite.x = app.screen.width / 2;
         displacementSprite.y = app.screen.height / 2;
 
@@ -127,108 +342,25 @@
         const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
         app.stage.filters = [displacementFilter];
 
-        // Add resize listener
-        window.addEventListener('resize', resizeBackground);
-        
-        // Add animation loop
+        window.addEventListener('resize', () => {
+          resizeBackground();
+        });
+
         app.ticker.add(() => {
           displacementSprite.rotation += 0.002;
         });
 
-        // Trigger initial resize
-        // We wait a tiny bit for texture to load dimensions
-        if (sourceType === 'image') {
-           bgTexture.baseTexture.once('loaded', resizeBackground);
-        }
         resizeBackground();
-      }
 
-      // 2. Resize Function (Works for both Image and Video)
-      function resizeBackground() {
-        if (!backgroundSprite || !app) return;
-
-        const screenWidth = app.screen.width;
-        const screenHeight = app.screen.height;
-        
-        // Get natural dimensions of the texture
-        const texture = backgroundSprite.texture;
-        if (!texture.valid) return; // Wait for texture to be valid
-
-        const texWidth = texture.width;
-        const texHeight = texture.height;
-
-        if (texWidth === 0 || texHeight === 0) return;
-
-        const texAspectRatio = texWidth / texHeight;
-        const screenAspectRatio = screenWidth / screenHeight;
-
-        let scale, newWidth, newHeight, offsetX = 0, offsetY = 0;
-
-        // Cover logic (CSS background-size: cover equivalent)
-        if (texAspectRatio > screenAspectRatio) {
-          scale = screenHeight / texHeight;
-          newWidth = texWidth * scale;
-          newHeight = screenHeight;
-          offsetX = (screenWidth - newWidth) / 2;
-        } else {
-          scale = screenWidth / texWidth;
-          newWidth = screenWidth;
-          newHeight = texHeight * scale;
-          offsetY = (screenHeight - newHeight) / 2;
-        }
-
-        backgroundSprite.width = newWidth;
-        backgroundSprite.height = newHeight;
-        backgroundSprite.x = offsetX;
-        backgroundSprite.y = offsetY;
-
-        if (displacementSprite) {
-            displacementSprite.x = screenWidth / 2;
-            displacementSprite.y = screenHeight / 2;
-        }
-      }
-
-      // 3. Loading Logic (The "Race" between Video and Timeout)
-      
-      // If video element is missing, go straight to image
-      if (!videoElement) {
-        console.warn("Video element not found. Using fallback image.");
-        initPixi('image', fallbackImageURL);
-        return;
-      }
-
-      // Set playback rate safely
-      videoElement.playbackRate = 0.5;
-
-      // Timer: If video takes longer than 3 seconds, load image
-      const fallbackTimer = setTimeout(() => {
-        if (!isInitialized) {
-          console.warn("Video loading timed out. Switching to fallback image.");
-          initPixi('image', fallbackImageURL);
-        }
-      }, 3000); // 3000ms = 3 seconds
-
-      // Try to play video
-      const startVideo = () => {
-        if (!isInitialized) {
-          clearTimeout(fallbackTimer); // Stop the timer, video won!
-          initPixi('video', videoElement);
-          videoElement.play().catch(e => console.error("Video play blocked:", e));
-        }
-      };
-
-      if (videoElement.readyState >= 2) {
-        startVideo();
-      } else {
-        videoElement.addEventListener('loadeddata', startVideo);
-        videoElement.addEventListener('error', () => {
-           console.warn("Video error detected. Switching to fallback image.");
-           clearTimeout(fallbackTimer);
-           initPixi('image', fallbackImageURL);
+        videoElement.play().catch(error => {
+          console.error('Video playback failed:', error);
         });
-        videoElement.load();
-      }
+      });
 
+      // Fallback
+      videoElement.play().catch(error => {
+        console.error('Attempted video play outside loadeddata listener:', error);
+      });
     });
   </script>
 </body>
