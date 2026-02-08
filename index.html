@@ -2,6 +2,15 @@
 <html lang="en">
 
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EJNRJTEVBE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-EJNRJTEVBE');
+  </script>
   <meta charset="UTF-8">
   <meta name="description" content="Phantasma Labs - Neural Synthesis">
   <meta name="keywords" content="Stable Diffusion Synthography, CGI, AI, XR, Digital Twins">
@@ -55,9 +64,7 @@
       align-items: center;
       box-sizing: border-box;
       pointer-events: none;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: #f3f7f7;
       height: 45px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
@@ -352,36 +359,10 @@
       }
     }
 
-    @keyframes pulse-up {
-      0% {
-        transform: translateX(-50%) translateY(0);
-      }
-
-      50% {
-        transform: translateX(-50%) translateY(-15px);
-      }
-
-      100% {
-        transform: translateX(-50%) translateY(0);
-      }
-    }
-
     .scroll-arrow.animate {
       animation: pulse 2.5s infinite ease-in-out;
     }
 
-    .scroll-arrow.up {
-      bottom: auto;
-      top: 40px;
-    }
-
-    .scroll-arrow.up.animate {
-      animation: pulse-up 2.5s infinite ease-in-out;
-    }
-
-    .scroll-arrow.up:hover {
-      transform: translateX(-50%) translateY(-5px);
-    }
 
     /* Scrollbar */
     ::-webkit-scrollbar {
@@ -420,7 +401,7 @@
 
     .detailed-service-section {
       border-top: 1px solid rgba(0, 0, 0, 0.05);
-      padding-top: 80px;
+      padding-top: 30px;
       padding-bottom: 80px;
       position: relative;
     }
@@ -722,7 +703,7 @@
 
     <!-- Hero Section -->
     <!-- Hero Section -->
-    <section class="hero-section" id="hero">
+    <section class="hero-section">
       <div class="hero-content-wrapper">
         <div class="hero-main">
           <h1>Where Logic Meets Aesthetics.</h1>
@@ -797,13 +778,6 @@
         </div>
       </div>
 
-      <!-- Up Arrow to Hero -->
-      <a href="#hero" class="scroll-arrow up animate" aria-label="Scroll Up">
-        <svg viewBox="0 0 24 24">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-      </a>
-
       <!-- Down Arrow to Synthography -->
       <a href="#service-synthography" class="scroll-arrow animate" aria-label="Scroll Down">
         <svg viewBox="0 0 24 24">
@@ -871,13 +845,6 @@
           <img src="images/r3n4t4/ren4t4_003.webp" alt="R3n4t4 Project">
         </div>
       </div>
-
-      <!-- Up Arrow to Generative Video -->
-      <a href="#service-video" class="scroll-arrow up animate" aria-label="Scroll Up">
-        <svg viewBox="0 0 24 24">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-      </a>
     </section>
 
   </main>
