@@ -289,8 +289,8 @@
       color: rgba(0, 0, 0, 0.7);
     }
 
-    /* Fixed Video Background */
-    .fixed-bg-video {
+    .fixed-bg-video,
+    .fixed-bg-image {
       position: fixed;
       top: 0;
       left: 0;
@@ -298,6 +298,89 @@
       height: 100%;
       object-fit: cover;
       z-index: -2;
+    }
+
+    .fixed-bg-image {
+      background: url('images/bg.webp') no-repeat center center;
+      background-size: cover;
+      opacity: 0.75;
+    }
+
+    /* Scroll Arrow */
+    .scroll-arrow {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      z-index: 20;
+    }
+
+    .scroll-arrow:hover {
+      opacity: 0.8;
+      transform: translateX(-50%) translateY(5px);
+    }
+
+    .scroll-arrow svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #000000;
+      stroke-width: 1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(15px);
+      }
+
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    @keyframes pulse-up {
+      0% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-15px);
+      }
+
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .scroll-arrow.animate {
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    .scroll-arrow.up {
+      bottom: auto;
+      top: 40px;
+    }
+
+    .scroll-arrow.up.animate {
+      animation: pulse-up 2.5s infinite ease-in-out;
+    }
+
+    .scroll-arrow.up:hover {
+      transform: translateX(-50%) translateY(-5px);
     }
 
     /* Scrollbar */
@@ -337,9 +420,11 @@
 
     .detailed-service-section {
       border-top: 1px solid rgba(0, 0, 0, 0.05);
-      padding-top: 30px;
-      padding-bottom: 50px;
+      padding-top: 80px;
+      padding-bottom: 80px;
+      position: relative;
     }
+
 
     .detailed-service-section h2 {
       font-size: clamp(2rem, 5vw, 3rem);
@@ -603,6 +688,7 @@
 </head>
 
 <body>
+  <div class="fixed-bg-image"></div>
 
   <!-- Navigation -->
   <nav class="top-nav">
@@ -635,7 +721,8 @@
   <main class="content-wrapper">
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
       <div class="hero-content-wrapper">
         <div class="hero-main">
           <h1>Where Logic Meets Aesthetics.</h1>
@@ -644,6 +731,11 @@
 
         </div>
       </div>
+      <a href="#service-video" class="scroll-arrow animate" aria-label="Scroll Down">
+        <svg viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </a>
     </section>
 
     <!-- Detailed Service 1: Generative Video -->
@@ -668,12 +760,10 @@
                 through a mix of generative footage and directed CGI.</p>
             </div>
             <div style="margin-bottom: 10px;">
-              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Visual Worlds at Scale
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Brand Visual Systems
               </h5>
-              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Generate entire
-                environments
-                and
-                atmospheres, then move cameras through them with cinematic intent.</p>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Cohesive AI-driven visual
+                languages built for campaigns, product launches, and cross-platform storytelling.</p>
             </div>
             <div style="margin-bottom: 10px;">
               <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Hybrid AI + VFX
@@ -706,6 +796,20 @@
             data-label="Video Project 03"></div>
         </div>
       </div>
+
+      <!-- Up Arrow to Hero -->
+      <a href="#hero" class="scroll-arrow up animate" aria-label="Scroll Up">
+        <svg viewBox="0 0 24 24">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+      </a>
+
+      <!-- Down Arrow to Synthography -->
+      <a href="#service-synthography" class="scroll-arrow animate" aria-label="Scroll Down">
+        <svg viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </a>
     </section>
 
     <!-- Section 2: Synthography -->
@@ -767,9 +871,17 @@
           <img src="images/r3n4t4/ren4t4_003.webp" alt="R3n4t4 Project">
         </div>
       </div>
+
+      <!-- Up Arrow to Generative Video -->
+      <a href="#service-video" class="scroll-arrow up animate" aria-label="Scroll Up">
+        <svg viewBox="0 0 24 24">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+      </a>
     </section>
 
   </main>
+
 
 
   <!-- Lightbox Modal -->
