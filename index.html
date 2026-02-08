@@ -3,49 +3,406 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Phantasma Labs - Image Synthesis">
-  <meta name="keywords" content="Stable Diffusion Synthography">
+  <meta name="description" content="Phantasma Labs - Neural Synthesis">
+  <meta name="keywords" content="Stable Diffusion Synthography, CGI, AI, XR, Digital Twins">
   <meta name="author" content="Manuel Llamas">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Synthography | Phantasma Labs</title>
+  <title>Phantasma Labs | Image Synthesis</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link
     href="https://fonts.googleapis.com/css2?family=Muli&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+
+  <script>
+    (function () {
+      const userLang = navigator.language || navigator.userLanguage;
+      if (userLang.startsWith('es') && !window.location.hash.includes('lang=en')) {
+        window.location.href = 'index_es.html';
+      }
+    })();
+  </script>
 
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #000;
-      color: white;
+      background-color: #ffffff;
+      color: #000000;
       overflow-x: hidden;
-      /* Prevent horizontal scroll */
-    }
-
-    /* Background Styles */
-    #pixi-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-    }
-
-    video.background-video {
-      display: none;
+      font-weight: 300;
+      line-height: 1.5;
+      height: 100%;
     }
 
     a {
-      color: white;
+      color: #000000;
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
+    /* Navigation */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 40px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      height: 45px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .top-nav * {
+      pointer-events: auto;
+    }
+
+    .brand {
+      margin: 0;
+      z-index: 1001;
+    }
+
+    .brand-link {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #000000;
+      text-decoration: none;
+    }
+
+    /* Desktop Navigation Links */
+    .desktop-links {
+      display: none;
+      gap: 30px;
+      z-index: 1001;
+    }
+
+    .desktop-links a {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .desktop-links a:hover {
+      color: #000000;
+      font-weight: 700;
+    }
+
+    /* Burger Menu Icon */
+    .burger-menu {
+      width: 30px;
+      height: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 1001;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .burger-bar {
+      width: 100%;
+      height: 2px;
+      background-color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    /* Menu Overlay */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      text-align: center;
+    }
+
+    .menu-links a {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .menu-links a:hover {
+      color: #000000;
+      font-weight: 700;
+    }
+
+    /* Burger Animation */
+    .burger-menu.active .burger-bar:nth-child(1) {
+      transform: translateY(9.5px) rotate(45deg);
+    }
+
+    .burger-menu.active .burger-bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger-menu.active .burger-bar:nth-child(3) {
+      transform: translateY(-9.5px) rotate(-45deg);
+    }
+
+    /* Content Layout */
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 30px 10%;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Hero Section */
+    /* Unified Hero Section CSS adjustments */
+    .hero-section {
+      align-items: flex-start;
+      text-align: left;
+      justify-content: center;
+      padding-top: 67px;
+      padding-bottom: 67px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .hero-content-wrapper {
+      max-width: 1000px;
+    }
+
+    .hero-section h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 200;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      line-height: 0.9;
+      color: #000000;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      max-width: 700px;
+      margin-bottom: 60px;
+      line-height: 1.5;
+      font-weight: 300;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 18px 45px;
+      border: 1px solid #000000;
+      color: #000000;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      background: #000000;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .hero-value-prop h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      margin-bottom: 25px;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #000000;
+      line-height: 1.1;
+    }
+
+    .hero-value-prop p {
+      font-size: clamp(0.9rem, 1.25vw, 1.1rem);
+      line-height: 1.8;
+      margin-bottom: 30px;
+      color: rgba(0, 0, 0, 0.6);
+      font-weight: 300;
+      max-width: 850px;
+    }
+
+    .hero-philosophy {
+      margin-top: 50px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+    }
+
+    .hero-philosophy h4 {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.85rem;
+      color: rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .hero-philosophy p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    /* Fixed Video Background */
+    .fixed-bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #eeeeee;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #dddddd;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      height: 100%;
+    }
+
+    section {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .detailed-service-section {
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      padding-top: 30px;
+      padding-bottom: 50px;
+    }
+
+    .detailed-service-section h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 15px;
+      /* Reduced from 30px */
+      font-weight: 200;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #000000;
+    }
+
+    .service-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .meta-item {
+      padding: 0;
+      background: transparent;
+      border-left: none;
+    }
+
+    /* Media Placeholder Styling */
+    .media-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #f0f0f0;
+      border: 1px dashed rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+      position: relative;
+    }
+
+    .media-placeholder::after {
+      content: attr(data-label);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.4;
+      color: #000000;
+    }
+
+
+
+    @media screen and (min-width: 1025px) {
+      .desktop-links {
+        display: flex;
+      }
+
+      .burger-menu {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 1024px) {
+      .service-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+    }
 
 
     /* Grid Layout */
@@ -53,19 +410,17 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
-      /* Small gap like Instagram */
       padding: 4px;
       margin-top: 10px;
-      /* Reduced space since topnav is gone */
     }
 
     .grid-item {
       position: relative;
       width: 100%;
       padding-top: 100%;
-      /* Square aspect ratio */
       overflow: hidden;
       cursor: pointer;
+      background: #f0f0f0;
     }
 
     .grid-item img {
@@ -82,16 +437,7 @@
       transform: scale(1.05);
     }
 
-    /* Mobile Grid */
-    @media screen and (max-width: 768px) {
-      .project-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 10px;
-      }
-    }
-
-    /* Lightbox */
+    /* Lightbox Modal */
     #lightbox {
       display: none;
       position: fixed;
@@ -103,7 +449,6 @@
       background: rgba(0, 0, 0, 0.95);
       flex-direction: row;
       overflow: hidden;
-      padding-top: 0px;
       box-sizing: border-box;
     }
 
@@ -128,12 +473,12 @@
       box-sizing: border-box;
       position: relative;
       overflow-y: auto;
-      /* Enable vertical scrolling */
+      color: white;
     }
 
     /* Minimalistic Scrollbar */
     .lightbox-right::-webkit-scrollbar {
-      width: 10px;
+      width: 6px;
     }
 
     .lightbox-right::-webkit-scrollbar-track {
@@ -141,12 +486,8 @@
     }
 
     .lightbox-right::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
-    }
-
-    .lightbox-right::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(255, 255, 255, 0.8);
     }
 
     #lightbox-img {
@@ -155,7 +496,6 @@
       object-fit: contain;
     }
 
-    /* Lightbox Controls */
     .nav-btn {
       position: absolute;
       top: 50%;
@@ -167,7 +507,7 @@
       font-size: 24px;
       cursor: pointer;
       transition: background 0.3s;
-      z-index: 10;
+      z-index: 2002;
     }
 
     .nav-btn:hover {
@@ -182,30 +522,30 @@
       right: 20px;
     }
 
-    /* Lightbox Info */
     .project-title {
-      font-family: 'Muli', sans-serif;
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 1.5rem;
+      font-weight: 700;
       margin-bottom: 20px;
-      color: white;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
-    .project-tools {
-      font-size: 14px;
-      color: white;
-      margin-bottom: 20px;
+    .project-tools,
+    .lb-aimodels {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .project-desc {
-      font-size: 16px;
+      font-size: 0.9rem;
       line-height: 1.6;
-      color: white;
+      font-weight: 300;
+      white-space: pre-line;
     }
 
-
-
-    /* Close Button */
     .close-btn {
       position: absolute;
       top: 20px;
@@ -213,12 +553,12 @@
       background: transparent;
       border: none;
       color: white;
-      font-size: 30px;
+      font-size: 40px;
       cursor: pointer;
-      z-index: 2001;
+      z-index: 2100;
+      line-height: 1;
     }
 
-    /* Responsive Lightbox */
     @media screen and (max-width: 900px) {
       #lightbox {
         flex-direction: column;
@@ -233,12 +573,30 @@
         width: 100%;
         height: 40%;
         padding: 20px;
-        overflow-y: auto;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      section {
+        padding: 60px 5%;
       }
 
-      .nav-btn {
-        padding: 10px;
-        font-size: 18px;
+      .top-nav {
+        padding: 20px;
+      }
+
+      .detailed-service-section {
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+
+      .service-meta {
+        display: none !important;
+      }
+
+      .project-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
       }
     }
   </style>
@@ -246,122 +604,339 @@
 
 <body>
 
- <!-- Navigation -->
-  <div style="max-width: 320px; margin: 10px 0; text-align: left; padding: 1px; border-radius: 10px; position: relative; z-index: 2;">
-    <h4 style="margin-bottom: 20px; color: white;">Phantasma Labs</h4>
-    <a href="synthography.html">Synthography</a>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="brand">
+      <a href="index.html" class="brand-link">Phantasma Labs</a>
+    </div>
+
+    <div class="desktop-links">
+      <a href="#service-video">Generative Video</a>
+      <a href="#service-synthography">Synthography</a>
+      <a href="mailto:manuel.llamas@phantasmalabs.com">Contact</a>
+    </div>
+
+    <button class="burger-menu" id="burger-menu" aria-label="Toggle Menu">
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+    </button>
+  </nav>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menu-overlay">
+    <nav class="menu-links">
+      <a href="#service-video">Generative Video</a>
+      <a href="#service-synthography">Synthography</a>
+      <a href="mailto:manuel.llamas@phantasmalabs.com">Contact</a>
+    </nav>
   </div>
 
-  <div style="position: fixed; bottom: 20px; left: 20px; text-align: left; z-index: 2;">
-    <a href="mailto:manuel.llamas@phantasmalabs.com" style="color: white; font-size: 24px;">
-      <i class="fas fa-envelope"></i>
-    </a>
+  <main class="content-wrapper">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content-wrapper">
+        <div class="hero-main">
+          <h1>Where Logic Meets Aesthetics.</h1>
+          <p class="hero-tagline">A high-fidelity production lab fusing CGI Architecture with Neural Synthesis. We
+            engineer cinematic product visuals and pipelines.</p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Service 1: Generative Video -->
+    <section id="service-video" class="detailed-service-section">
+      <div style="margin-bottom: 5px;">
+        <h2
+          style="font-size: clamp(1rem, 2.5vw, 1.5rem); font-weight: 200; text-transform: uppercase; letter-spacing: 4px;">
+          Generative Video</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 10px; font-weight: 400; line-height: 1.6;">We
+          combine generative models with traditional film language, 3D, and compositing to produce moving images that
+          are both emotionally cinematic and technically directed.</p>
+      </div>
+
+      <div class="service-meta" style="margin-top: 10px; margin-bottom: 10px;">
+        <div class="meta-item">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">AI-Driven Cinematic
+                Spots</h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Concept films and product
+                stories created
+                through a mix of generative footage and directed CGI.</p>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Visual Worlds at Scale
+              </h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Generate entire
+                environments
+                and
+                atmospheres, then move cameras through them with cinematic intent.</p>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Hybrid AI + VFX
+                Pipelines</h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Generative passes refined
+                with professional
+                compositing and 3D workflows.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Grid (Placeholders) -->
+      <div class="project-grid">
+        <!-- Project 4: Video Temp 1 -->
+        <div class="grid-item" onclick="openLightbox('video1')">
+          <div class="media-placeholder" style="position: absolute; top:0; left:0; width:100%; height:100%;"
+            data-label="Video Project 01"></div>
+        </div>
+
+        <!-- Project 5: Video Temp 2 -->
+        <div class="grid-item" onclick="openLightbox('video2')">
+          <div class="media-placeholder" style="position: absolute; top:0; left:0; width:100%; height:100%;"
+            data-label="Video Project 02"></div>
+        </div>
+
+        <!-- Project 6: Video Temp 3 -->
+        <div class="grid-item" onclick="openLightbox('video3')">
+          <div class="media-placeholder" style="position: absolute; top:0; left:0; width:100%; height:100%;"
+            data-label="Video Project 03"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Synthography -->
+    <section id="service-synthography" class="detailed-service-section">
+      <div style="margin-bottom: 5px;">
+        <h2
+          style="font-size: clamp(1rem, 2.5vw, 1.5rem); font-weight: 200; text-transform: uppercase; letter-spacing: 4px;">
+          Synthography</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 10px; font-weight: 400; line-height: 1.6;">Our
+          approach to replacing traditional photoshoots with fully controlled, physically accurate digital production.
+          We build hyper-real product imagery using CGI and neural enhancement.</p>
+      </div>
+
+      <div class="service-meta" style="margin-top: 10px; margin-bottom: 10px;">
+        <div class="meta-item">
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Digital Product Twins
+              </h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">We build high-fidelity 3D
+                replicas of
+                products that behave like real objects under real light. These assets become long-term brand
+                infrastructure.</p>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Synthetic Product
+                Photography</h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Studio shots, macro beauty
+                shots, and
+                abstract scenes created digitally, with infinite lighting and camera flexibility.</p>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <h5 style="margin: 0 0 5px 0; color: black; font-weight: 500; font-size: 0.9rem;">Scalable Visual Systems
+              </h5>
+              <p style="font-size: 0.8rem; opacity: 0.7; font-weight: 300; line-height: 1.6;">Generate entire libraries
+                of
+                campaign
+                visuals, angles, and lighting variations without reshooting.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Grid -->
+      <div class="project-grid">
+        <!-- Project 1: Rar -->
+        <div class="grid-item" onclick="openLightbox('rar')">
+          <img src="images/rar/Rar_001.webp" alt="Rar Project">
+        </div>
+
+        <!-- Project 2: Motosai -->
+        <div class="grid-item" onclick="openLightbox('motosai')">
+          <img src="images/motosai/motosai_007.webp" alt="Motosai Project">
+        </div>
+
+        <!-- Project 3: Ren4t4 -->
+        <div class="grid-item" onclick="openLightbox('ren4t4')">
+          <img src="images/r3n4t4/ren4t4_003.webp" alt="R3n4t4 Project">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox">
+    <button class="close-btn" onclick="closeLightbox()">&times;</button>
+
+    <div class="lightbox-left">
+      <button class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
+      <img id="lightbox-img" src="" alt="Project Image">
+      <button class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</button>
+    </div>
+
+    <div class="lightbox-right" id="lightbox-info">
+      <div class="project-title" id="lb-title">Title</div>
+      <div class="project-tools" id="lb-tools">Tools Used</div>
+      <div class="project-tools" id="lb-aimodels">AI Models</div>
+      <div class="project-desc" id="lb-desc">Description goes here.</div>
+    </div>
   </div>
-   <!-- Background -->
-  <canvas id="pixi-canvas"></canvas>
-
-  <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
-    <source src="clips/004_web.mp4?v=202506142043" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-<!-- Background -->
-  <canvas id="pixi-canvas"></canvas>
-
-  <video class="background-video" autoplay muted loop playsinline id="backgroundVideo">
-    <source src="clips/004.mp4?v=202506142043" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
 
   <!-- Background Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const videoElement = document.getElementById('backgroundVideo');
-      videoElement.playbackRate = 0.5;
+      // Burger Menu Toggle
+      const burgerMenu = document.getElementById('burger-menu');
+      const menuOverlay = document.getElementById('menu-overlay');
+      const menuLinks = document.querySelectorAll('.menu-links a');
 
-      let app;
-      let background;
-      let displacementSprite;
+      burgerMenu.addEventListener('click', () => {
+        burgerMenu.classList.toggle('active');
+        menuOverlay.classList.toggle('active');
 
-      function resizeBackground() {
-        if (!background || !app || !videoElement) return;
-
-        const screenWidth = app.screen.width;
-        const screenHeight = app.screen.height;
-        const videoAspectRatio = videoElement.videoWidth / videoElement.videoHeight;
-        const screenAspectRatio = screenWidth / screenHeight;
-
-        let scale, newWidth, newHeight, offsetX = 0, offsetY = 0;
-
-        if (videoAspectRatio > screenAspectRatio) {
-          scale = screenHeight / videoElement.videoHeight;
-          newWidth = videoElement.videoWidth * scale;
-          newHeight = screenHeight;
-          offsetX = (screenWidth - newWidth) / 2;
+        // Prevent body scroll when menu is open
+        if (menuOverlay.classList.contains('active')) {
+          document.body.style.overflow = 'hidden';
         } else {
-          scale = screenWidth / videoElement.videoWidth;
-          newWidth = screenWidth;
-          newHeight = videoElement.videoHeight * scale;
-          offsetY = (screenHeight - newHeight) / 2;
+          document.body.style.overflow = '';
         }
+      });
 
-        background.width = newWidth;
-        background.height = newHeight;
-        background.x = offsetX;
-        background.y = offsetY;
+      // Close menu when a link is clicked
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          burgerMenu.classList.remove('active');
+          menuOverlay.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
 
-        if (displacementSprite) {
-          displacementSprite.x = app.screen.width / 2;
-          displacementSprite.y = app.screen.height / 2;
+      // Project Data & Lightbox Logic
+      const projects = {
+        'rar': {
+          title: 'Project RAR',
+          tools: 'ComfyUI, Adobe Photoshop',
+          aimodels: 'Zimage, SeedVR2',
+          description: `Project RAR is an AI-driven visual lookbook created for a non-profit dog and cat shelter to support fundraising through T-shirt design sales.\n\nProcess: \nThe project was generated in ComfyUI using the Zimage AI model for initial image generation.The resulting images were then upscaled and enhanced using SeedVR2 within ComfyUI to achieve high- resolution, print- ready visuals suitable for apparel production.`,
+          basePath: 'images/rar/Rar_',
+          count: 9,
+          ext: '.webp',
+          startIndex: 1
+        },
+        'motosai': {
+          title: 'Motosai',
+          tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+          aimodels: 'Flux Dev 1',
+          description: `Motosai is a concept portrait series inspired by motorcycle taxi drivers in Bangkok, exploring the relationship between human labor and machine dependency.\n\nProcess:\nThe project was generated using Flux Dev 1 in ComfyUI, with custom Fine tune LORA training. Two separate LoRA trainings were created: one for the urban  environment, and another for the character and wardrobe.`,
+          basePath: 'images/motosai/motosai_',
+          count: 9,
+          ext: '.webp',
+          startIndex: 1
+        },
+        'ren4t4': {
+          title: 'AI Avatar Model',
+          tools: 'ComfyUI, Adobe Photoshop, FluxGym',
+          aimodels: 'Flux Dev 1',
+          description: `This project explores the creation of a high-fidelity AI avatar model, designed to function as a flexible digital fashion subject for editorial, lookbooks, and brand visuals.\n\nProcess:\nThe model was generated using Flux Dev 1 within ComfyUI, supported by a single LoRA trained on the character. DWpose and ZDepth ControlNet were used to control body pose, allowing for posture, framing, and camera perspective.`,
+          basePath: 'images/r3n4t4/ren4t4_',
+          count: 9,
+          ext: '.webp',
+          startIndex: 1
+        },
+        'video1': {
+          title: 'Cinematic AI Spot 01',
+          tools: 'ComfyUI, Runway Gen-3',
+          aimodels: 'Stable Video Diffusion',
+          description: 'Temporary description for cinematic AI video project 01.',
+          basePath: 'images/bg/01', // Temporary path
+          count: 1,
+          ext: '.webp',
+          startIndex: 1
+        },
+        'video2': {
+          title: 'Visual World 02',
+          tools: 'Midjourney, Pika Labs',
+          aimodels: 'Luma Dream Machine',
+          description: 'Temporary description for cinematic AI video project 02.',
+          basePath: 'images/bg/01',
+          count: 1,
+          ext: '.webp',
+          startIndex: 1
+        },
+        'video3': {
+          title: 'Hybrid VFX Pipeline 03',
+          tools: 'After Effects, ComfyUI',
+          aimodels: 'Kling AI',
+          description: 'Temporary description for cinematic AI video project 03.',
+          basePath: 'images/bg/01',
+          count: 1,
+          ext: '.webp',
+          startIndex: 1
         }
+      };
+
+      let currentProject = null;
+      let currentImageIndex = 0;
+
+      window.openLightbox = function (projectId) {
+        currentProject = projects[projectId];
+        if (!currentProject) return;
+
+        currentImageIndex = currentProject.startIndex;
+        updateLightboxContent();
+
+        document.getElementById('lightbox').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      };
+
+      window.closeLightbox = function () {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+      };
+
+      function formatDate(n) {
+        return n.toString().padStart(3, '0');
       }
 
-      videoElement.addEventListener('loadeddata', () => {
-        app = new PIXI.Application({
-          view: document.getElementById('pixi-canvas'),
-          resizeTo: window,
-          transparent: false,
-          backgroundColor: 0x000000
-        });
+      function updateLightboxContent() {
+        if (!currentProject) return;
+        const imgPath = `${currentProject.basePath}${formatDate(currentImageIndex)}${currentProject.ext}`;
+        document.getElementById('lightbox-img').src = imgPath;
 
-        const bgTexture = PIXI.Texture.from(videoElement);
-        background = new PIXI.Sprite(bgTexture);
-        background.anchor.set(0);
-        app.stage.addChild(background);
+        document.getElementById('lb-title').innerText = currentProject.title;
+        document.getElementById('lb-tools').innerText = 'Tools: ' + currentProject.tools;
+        document.getElementById('lb-aimodels').innerText = 'AI Models: ' + (currentProject.aimodels || 'N/A');
+        document.getElementById('lb-desc').innerText = currentProject.description || '';
+      }
 
-        const distortionTexture = PIXI.Texture.from('images/distortion.png');
-        displacementSprite = new PIXI.Sprite(distortionTexture);
-        displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
-        displacementSprite.anchor.set(0.5);
-        displacementSprite.scale.set(10);
+      window.changeImage = function (dir) {
+        if (!currentProject) return;
+        currentImageIndex += dir;
+        if (currentImageIndex > currentProject.count) currentImageIndex = 1;
+        if (currentImageIndex < 1) currentImageIndex = currentProject.count;
+        updateLightboxContent();
+      };
 
-        displacementSprite.x = app.screen.width / 2;
-        displacementSprite.y = app.screen.height / 2;
-
-        app.stage.addChild(displacementSprite);
-
-        const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
-        app.stage.filters = [displacementFilter];
-
-        window.addEventListener('resize', () => {
-          resizeBackground();
-        });
-
-        app.ticker.add(() => {
-          displacementSprite.rotation += 0.002;
-        });
-
-        resizeBackground();
-
-        videoElement.play().catch(error => {
-          console.error('Video playback failed:', error);
-        });
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('lightbox').style.display === 'flex') {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') changeImage(-1);
+          if (e.key === 'ArrowRight') changeImage(1);
+        }
       });
 
-      // Fallback
-      videoElement.play().catch(error => {
-        console.error('Attempted video play outside loadeddata listener:', error);
-      });
     });
+
   </script>
 </body>
+
 </html>

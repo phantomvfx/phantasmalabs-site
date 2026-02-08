@@ -102,7 +102,7 @@
       gap: 4px;
       /* Small gap like Instagram */
       padding: 4px;
-      margin-top: 60px;
+      margin-top: 15px;
       /* Space for topnav */
     }
 
@@ -390,6 +390,16 @@
       videoElement.play().catch(error => {
         console.error('Attempted video play outside loadeddata listener:', error);
       });
+
+      // Deep Link Check: Open lightbox if project param exists
+      const urlParams = new URLSearchParams(window.location.search);
+      const projectId = urlParams.get('project');
+      if (projectId && typeof openLightbox === 'function' && projects[projectId]) {
+        // Delay slightly to ensure everything is ready
+        setTimeout(() => {
+          openLightbox(projectId);
+        }, 300);
+      }
     });
   </script>
 
